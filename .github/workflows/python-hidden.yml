@@ -1,0 +1,26 @@
+name: Python Solution Tests
+
+on:
+  workflow_dispatch:
+
+jobs:
+  tests-prereq:
+    name: Tests Prerequisites Check
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check if secrets.GH_TOKEN is defined
+      run: |
+        if [ -z "${{ secrets.GH_TOKEN }}" ]; then
+          echo "GH_TOKEN is not set, ask your email contact to add it for you"
+          exit 1
+        fi
+
+  tests:
+    name: Solution Tests (Output Hidden)
+    uses: UBCSailbot/software-quiz/.github/workflows/hidden-tests.yml@master
+    needs: [tests-prereq]
+    with:
+      repository: ${{ github.repository }}
+      pytest: true
+    secrets:
+      token: ${{ secrets.GH_TOKEN }}
